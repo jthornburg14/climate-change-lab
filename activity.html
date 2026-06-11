@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 9: Climate Change — Activity | EES 2001</title>
+<style>
+  :root{
+    --ink:#1c2b2d; --paper:#f6f4ee; --panel:#ffffff;
+    --warm:#c0492b; --cool:#2f6f8f; --ice:#5b8aa6; --line:#d9d3c6;
+    --muted:#5e6b6c; --gold:#caa64a; --ok:#2f7d54; --no:#b1462f;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    line-height:1.6; font-size:17px;
+  }
+  .wrap{max-width:880px; margin:0 auto; padding:0 22px;}
+  header.hero{background:linear-gradient(135deg,#1c2b2d,#28484c 60%,#2f6f8f); color:#f6f4ee; padding:38px 0 30px;}
+  .eyebrow{font-family:"Helvetica Neue",Arial,sans-serif; text-transform:uppercase; letter-spacing:.22em; font-size:12px; font-weight:700; color:#9cc3d4; margin-bottom:9px;}
+  header.hero h1{font-size:34px; margin:0 0 8px; font-weight:600; letter-spacing:-.01em;}
+  header.hero p{margin:0; color:#d7e2e4; max-width:640px;}
+  .progress{position:sticky; top:0; z-index:30; background:rgba(246,244,238,.96); backdrop-filter:blur(6px); border-bottom:1px solid var(--line);}
+  .progress .wrap{display:flex; gap:6px; padding:9px 22px; flex-wrap:wrap;}
+  .pchip{font-family:"Helvetica Neue",Arial,sans-serif; font-size:12px; font-weight:600; color:var(--muted); padding:5px 11px; border-radius:18px; text-decoration:none; border:1.5px solid transparent;}
+  .pchip:hover{background:#e9e4d8; color:var(--ink);}
+  .pchip.done{color:var(--ok); border-color:#bcdcc9; background:#eaf5ee;}
+  main{padding:10px 0 50px;}
+  .station{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:24px 26px; margin:24px 0; scroll-margin-top:56px; box-shadow:0 1px 0 rgba(0,0,0,.02);}
+  .stnum{font-family:"Helvetica Neue",Arial,sans-serif; font-size:12px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--warm);}
+  .station h2{font-size:25px; margin:5px 0 6px; font-weight:600; letter-spacing:-.01em;}
+  .pts{font-family:"Helvetica Neue",Arial,sans-serif; font-size:12.5px; color:var(--muted); font-weight:600;}
+  .station h3{font-size:18px; margin:22px 0 8px; color:#26383a;}
+  p{margin:0 0 13px;}
+  .intro-note{font-size:15px; color:#445; background:#eef3f1; border-radius:10px; padding:14px 16px; margin:14px 0;}
+  /* plot */
+  .plotwrap{position:relative; background:#fbfaf6; border:1px solid var(--line); border-radius:10px; padding:10px; margin:14px 0;}
+  canvas{width:100%; display:block; touch-action:none;}
+  .scrub{display:flex; align-items:center; gap:12px; margin:10px 2px 4px; font-family:"Helvetica Neue",Arial,sans-serif; font-size:13px; color:var(--muted);}
+  .scrub input[type=range]{flex:1; accent-color:var(--cool);}
+  .readout{display:flex; gap:10px; flex-wrap:wrap; margin:8px 0 2px;}
+  .rcard{flex:1; min-width:120px; background:#fff; border:1px solid var(--line); border-radius:9px; padding:9px 12px; text-align:center;}
+  .rcard .lbl{font-family:"Helvetica Neue",Arial,sans-serif; font-size:11px; text-transform:uppercase; letter-spacing:.1em; color:var(--muted);}
+  .rcard .val{font-size:22px; font-weight:700; color:var(--cool);}
+  .rcard .val.co2{color:var(--warm);}
+  .legend{display:flex; gap:16px; justify-content:center; flex-wrap:wrap; font-family:"Helvetica Neue",Arial,sans-serif; font-size:12.5px; color:var(--muted); margin-top:6px;}
+  .sw{display:inline-block; width:14px; height:4px; border-radius:2px; vertical-align:middle; margin-right:5px;}
+  /* fields */
+  label.field{display:block; margin:14px 0 4px; font-weight:600; font-size:15.5px;}
+  label.field .hint{font-weight:400; color:var(--muted); font-size:14px; font-family:"Helvetica Neue",Arial,sans-serif;}
+  input.txt, textarea, select{width:100%; font-family:inherit; font-size:16px; color:var(--ink); border:1.5px solid var(--line); border-radius:9px; padding:10px 12px; background:#fff;}
+  input.txt:focus, textarea:focus, select:focus{outline:none; border-color:var(--cool);}
+  textarea{min-height:90px; resize:vertical; line-height:1.5;}
+  .inline-fields{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:560px){.inline-fields{grid-template-columns:1fr;}}
+  .helper{font-family:"Helvetica Neue",Arial,sans-serif; font-size:13.5px; color:var(--muted); margin:4px 0 0;}
+  /* proxy match */
+  .match-row{display:grid; grid-template-columns:1fr 1.2fr; gap:12px; align-items:center; margin:10px 0; padding:10px 12px; background:#fbfaf6; border:1px solid var(--line); border-radius:10px;}
+  @media(max-width:560px){.match-row{grid-template-columns:1fr;}}
+  .match-row .proxy{font-weight:600;}
+  /* callout */
+  .aha{border-left:4px solid var(--gold); background:#faf6ea; padding:13px 16px; border-radius:0 10px 10px 0; margin:14px 0; font-size:15.5px;}
+  .aha strong{color:#8a6d1c;}
+  /* submission */
+  .submit-station{background:linear-gradient(135deg,#28484c,#2f6f8f); color:#fff; border:none;}
+  .submit-station h2{color:#fff;}
+  .submit-station p{color:#d7e2e4;}
+  .btnrow{display:flex; gap:12px; flex-wrap:wrap; margin-top:8px;}
+  .btn{font-family:"Helvetica Neue",Arial,sans-serif; font-weight:700; font-size:15px; border:none; border-radius:26px; padding:13px 26px; cursor:pointer;}
+  .btn-primary{background:var(--gold); color:#22303a;}
+  .btn-primary:hover{background:#d8b65c;}
+  .btn-ghost{background:rgba(255,255,255,.14); color:#fff; border:1.5px solid rgba(255,255,255,.5);}
+  .btn-ghost:hover{background:rgba(255,255,255,.22);}
+  #subOut{width:100%; min-height:200px; margin-top:14px; font-family:"SF Mono",Menlo,Consolas,monospace; font-size:13px; background:#11272b; color:#d7e2e4; border:1px solid #3a5b60; border-radius:10px; padding:14px; display:none;}
+  .copied{font-family:"Helvetica Neue",Arial,sans-serif; font-size:14px; color:#d7e9d7; margin-top:8px; display:none;}
+  .warnmiss{font-family:"Helvetica Neue",Arial,sans-serif; font-size:14px; color:#ffd9cf; margin-top:8px; display:none;}
+  footer{border-top:1px solid var(--line); padding:22px 0; text-align:center; font-family:"Helvetica Neue",Arial,sans-serif; font-size:13px; color:var(--muted);}
+  a.back{color:#9cc3d4; text-decoration:none; font-family:"Helvetica Neue",Arial,sans-serif; font-size:14px; font-weight:600;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">EES 2001 · Lab 9 · Graded Activity</div>
+    <h1>Climate Change: Reading the Evidence</h1>
+    <p>Work through four stations using real climate data. Your answers fill in as you go — at the end, build your submission and paste it into Canvas. <a class="back" href="lab-guide.html">← Back to Lab Guide</a></p>
+  </div>
+</header>
+
+<nav class="progress">
+  <div class="wrap" id="progressBar">
+    <a class="pchip" href="#s1">1 · Ice Cores</a>
+    <a class="pchip" href="#s2">2 · The Modern Spike</a>
+    <a class="pchip" href="#s3">3 · Proxy Match</a>
+    <a class="pchip" href="#s4">4 · Analysis</a>
+    <a class="pchip" href="#submit">→ Submit</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <div class="intro-note" style="margin-top:18px;">
+    <strong>How this works:</strong> Each station has an interactive data tool and a few questions. Type directly into the boxes — nothing is saved to a server, so don't refresh until you've built and copied your submission at the bottom. Put your name in the first box.
+  </div>
+
+  <label class="field" for="studentName">Your name <span class="hint">(required for submission)</span></label>
+  <input class="txt" id="studentName" type="text" placeholder="First and last name" autocomplete="name">
+
+  <!-- ===================== STATION 1 ===================== -->
+  <section class="station" id="s1">
+    <div class="stnum">Station 1 · <span class="pts">15 points</span></div>
+    <h2>The 800,000-Year Ice-Core Record</h2>
+    <p>Below is the Antarctic ice-core record: atmospheric CO₂ (red) and temperature anomaly (blue) reaching back 800,000 years. Drag the slider — or click anywhere on the plot — to move the reading line and inspect any point in time.</p>
+
+    <div class="plotwrap">
+      <canvas id="iceCanvas" width="820" height="320" aria-label="Ice core CO2 and temperature over 800,000 years"></canvas>
+      <div class="scrub">
+        <span>Now</span>
+        <input id="iceSlider" type="range" min="0" max="800" value="18" step="1">
+        <span>800 ka</span>
+      </div>
+      <div class="readout">
+        <div class="rcard"><div class="lbl">Age</div><div class="val" id="iceAge">18 ka</div></div>
+        <div class="rcard"><div class="lbl">CO₂</div><div class="val co2" id="iceCO2">190 ppm</div></div>
+        <div class="rcard"><div class="lbl">Temp anomaly</div><div class="val" id="iceTemp">−8.0 °C</div></div>
+      </div>
+      <div class="legend">
+        <span><span class="sw" style="background:#c0492b"></span>CO₂ (ppm)</span>
+        <span><span class="sw" style="background:#2f6f8f"></span>Temperature anomaly (°C)</span>
+      </div>
+    </div>
+
+    <div class="aha">
+      <strong>Notice:</strong> the two lines rise and fall almost in lockstep. That tight coupling between CO₂ and temperature, repeated over hundreds of thousands of years, is one of the clearest fingerprints of CO₂'s role in climate.
+    </div>
+
+    <h3>Record your readings</h3>
+    <p class="helper">Use the slider to find each point, then read the values off the cards above.</p>
+
+    <div class="inline-fields">
+      <div>
+        <label class="field">CO₂ at a glacial low <span class="hint">(coldest periods)</span></label>
+        <input class="txt q" data-q="s1_glacial_co2" type="text" placeholder="e.g. ~190 ppm">
+      </div>
+      <div>
+        <label class="field">CO₂ at an interglacial high <span class="hint">(warmest periods)</span></label>
+        <input class="txt q" data-q="s1_inter_co2" type="text" placeholder="e.g. ~280 ppm">
+      </div>
+    </div>
+
+    <label class="field">What is the highest CO₂ value you can find <em>anywhere</em> in the 800,000-year record?</label>
+    <input class="txt q" data-q="s1_max_co2" type="text" placeholder="Highest CO₂ in the whole record (ppm)">
+
+    <label class="field">In one or two sentences, describe the relationship you see between the CO₂ line and the temperature line.</label>
+    <textarea class="q" data-q="s1_relationship" placeholder="What happens to temperature when CO₂ rises and falls?"></textarea>
+  </section>
+
+  <!-- ===================== STATION 2 ===================== -->
+  <section class="station" id="s2">
+    <div class="stnum">Station 2 · <span class="pts">20 points</span></div>
+    <h2>The Modern Spike — the Keeling Curve</h2>
+    <p>Since 1958, instruments at Mauna Loa, Hawaii have measured atmospheric CO₂ directly. This is the <em>same quantity</em> you just read from ancient ice — now measured in real time. The dashed gold line marks the 300 ppm natural ceiling you found in the ice-core record. Move the slider to read any year.</p>
+
+    <div class="plotwrap">
+      <canvas id="mlCanvas" width="820" height="300" aria-label="Mauna Loa CO2 since 1958"></canvas>
+      <div class="scrub">
+        <span>1959</span>
+        <input id="mlSlider" type="range" min="1959" max="2025" value="1959" step="1">
+        <span>2025</span>
+      </div>
+      <div class="readout">
+        <div class="rcard"><div class="lbl">Year</div><div class="val" id="mlYear">1959</div></div>
+        <div class="rcard"><div class="lbl">CO₂</div><div class="val co2" id="mlCO2">316 ppm</div></div>
+      </div>
+      <div class="legend">
+        <span><span class="sw" style="background:#c0492b"></span>Measured CO₂</span>
+        <span><span class="sw" style="background:#caa64a"></span>Natural ceiling (~300 ppm)</span>
+      </div>
+    </div>
+
+    <div class="aha">
+      <strong>The comparison that matters:</strong> in the ice cores, CO₂ took roughly <em>10,000 years</em> to climb the ~100 ppm from a glacial low to an interglacial high. The modern record climbed a comparable amount in well under a century.
+    </div>
+
+    <h3>Record your readings</h3>
+    <div class="inline-fields">
+      <div>
+        <label class="field">CO₂ in 1959 <span class="hint">(start of record)</span></label>
+        <input class="txt q" data-q="s2_1959" type="text" placeholder="ppm">
+      </div>
+      <div>
+        <label class="field">CO₂ in 2025 <span class="hint">(most recent)</span></label>
+        <input class="txt q" data-q="s2_2025" type="text" placeholder="ppm">
+      </div>
+    </div>
+
+    <label class="field">Roughly how much has CO₂ increased over this ~66-year record? <span class="hint">(subtract the two values)</span></label>
+    <input class="txt q" data-q="s2_increase" type="text" placeholder="2025 value minus 1959 value (ppm)">
+
+    <label class="field">Compare this to the ice-core record: how does the <em>modern level</em> compare to the highest natural value you found in Station 1? Is today's CO₂ inside or outside the natural range?</label>
+    <textarea class="q" data-q="s2_compare" placeholder="Is 2025 CO₂ above or below the 800,000-year natural ceiling? By how much?"></textarea>
+
+    <label class="field">In your own words, what does the <em>rate</em> of the modern rise tell you that the level alone does not?</label>
+    <textarea class="q" data-q="s2_rate" placeholder="Think about how fast vs. how high."></textarea>
+  </section>
+
+  <!-- ===================== STATION 3 ===================== -->
+  <section class="station" id="s3">
+    <div class="stnum">Station 3 · <span class="pts">15 points</span></div>
+    <h2>Match the Proxy</h2>
+    <p>Scientists reconstruct past climate using different natural recorders, each suited to a different timescale and quantity. Match each proxy to what it primarily records. Your selections are scored on completion.</p>
+
+    <div id="matchRows">
+      <div class="match-row">
+        <div class="proxy">Ice cores</div>
+        <select class="q" data-q="s3_ice">
+          <option value="">Choose what it records…</option>
+          <option>Direct samples of ancient air → past CO₂ (and temperature)</option>
+          <option>Annual growth bands → temperature & moisture, a few thousand years</option>
+          <option>Shell isotopes in seafloor mud → ocean temperature, millions of years</option>
+          <option>Cave mineral layers → rainfall and temperature history</option>
+        </select>
+      </div>
+      <div class="match-row">
+        <div class="proxy">Tree rings</div>
+        <select class="q" data-q="s3_tree">
+          <option value="">Choose what it records…</option>
+          <option>Direct samples of ancient air → past CO₂ (and temperature)</option>
+          <option>Annual growth bands → temperature & moisture, a few thousand years</option>
+          <option>Shell isotopes in seafloor mud → ocean temperature, millions of years</option>
+          <option>Cave mineral layers → rainfall and temperature history</option>
+        </select>
+      </div>
+      <div class="match-row">
+        <div class="proxy">Ocean sediment cores (foraminifera)</div>
+        <select class="q" data-q="s3_ocean">
+          <option value="">Choose what it records…</option>
+          <option>Direct samples of ancient air → past CO₂ (and temperature)</option>
+          <option>Annual growth bands → temperature & moisture, a few thousand years</option>
+          <option>Shell isotopes in seafloor mud → ocean temperature, millions of years</option>
+          <option>Cave mineral layers → rainfall and temperature history</option>
+        </select>
+      </div>
+      <div class="match-row">
+        <div class="proxy">Speleothems (cave formations)</div>
+        <select class="q" data-q="s3_cave">
+          <option value="">Choose what it records…</option>
+          <option>Direct samples of ancient air → past CO₂ (and temperature)</option>
+          <option>Annual growth bands → temperature & moisture, a few thousand years</option>
+          <option>Shell isotopes in seafloor mud → ocean temperature, millions of years</option>
+          <option>Cave mineral layers → rainfall and temperature history</option>
+        </select>
+      </div>
+    </div>
+
+    <label class="field">Why are ice cores especially valuable for studying past <em>CO₂</em> specifically, compared to the other proxies?</label>
+    <textarea class="q" data-q="s3_why" placeholder="What can an ice core do that a tree ring or sediment core cannot?"></textarea>
+  </section>
+
+  <!-- ===================== STATION 4 ===================== -->
+  <section class="station" id="s4">
+    <div class="stnum">Station 4 · <span class="pts">25 points</span></div>
+    <h2>Build the Argument</h2>
+    <p>You've now read two real datasets. This station asks you to put them together into a short, evidence-based explanation — the kind of reasoning a scientist uses to attribute the modern change to human activity. Use specific numbers from the stations above.</p>
+
+    <label class="field">1. Attribution argument <span class="hint">(4–6 sentences)</span></label>
+    <p class="helper">Using evidence from <em>both</em> the ice-core record and the modern record, explain why scientists conclude that the current CO₂ rise is driven by human activity rather than the natural glacial–interglacial cycle. Cite at least two specific numbers you recorded above.</p>
+    <textarea class="q" data-q="s4_argument" style="min-height:140px;" placeholder="Reference the natural range, the modern level, and the rate of change…"></textarea>
+
+    <label class="field">2. The CO₂–temperature link</label>
+    <p class="helper">Based on the lockstep relationship you saw in Station 1, what does the ice-core record suggest about what happens to global temperature as CO₂ continues to rise above the natural ceiling?</p>
+    <textarea class="q" data-q="s4_link" placeholder="If past CO₂ and temperature moved together, what does that imply going forward?"></textarea>
+
+    <label class="field">3. Reflection</label>
+    <p class="helper">What is one thing from this lab that changed, sharpened, or surprised your understanding of climate change? There's no wrong answer here — this is graded on genuine engagement.</p>
+    <textarea class="q" data-q="s4_reflect" placeholder="A sentence or two on what stuck with you."></textarea>
+  </section>
+
+  <!-- ===================== SUBMIT ===================== -->
+  <section class="station submit-station" id="submit">
+    <div class="stnum" style="color:#f0d68a;">Final Step</div>
+    <h2>Build Your Submission</h2>
+    <p>Click below to compile all your answers into plain text. Copy it, then paste it into the Lab 9 assignment box in Canvas. Make sure your name is filled in at the top of the page.</p>
+    <div class="btnrow">
+      <button class="btn btn-primary" id="buildBtn">Build my submission</button>
+      <button class="btn btn-ghost" id="copyBtn">Copy to clipboard</button>
+    </div>
+    <div class="warnmiss" id="warnMiss"></div>
+    <div class="copied" id="copiedMsg">✓ Copied. Paste it into the Canvas assignment box.</div>
+    <textarea id="subOut" readonly></textarea>
+  </section>
+
+</main>
+
+<footer>
+  EES 2001 · Physical Geology · Lab 9 Climate Change — Activity ·
+  Data: NOAA GML &amp; EPICA/Vostok ice cores (public domain)
+</footer>
+
+<script>
+/* ---------- DATA (bundled) ---------- */
+const ICE_CORE=[{ka:0,co2:280,temp:0.0},{ka:10,co2:265,temp:-0.5},{ka:18,co2:190,temp:-8.0},{ka:25,co2:195,temp:-7.5},{ka:35,co2:200,temp:-6.0},{ka:50,co2:200,temp:-6.5},{ka:65,co2:205,temp:-5.5},{ka:80,co2:225,temp:-4.0},{ka:95,co2:235,temp:-3.0},{ka:105,co2:245,temp:-2.0},{ka:120,co2:280,temp:1.0},{ka:130,co2:270,temp:0.5},{ka:140,co2:190,temp:-8.5},{ka:150,co2:195,temp:-8.0},{ka:160,co2:200,temp:-7.0},{ka:175,co2:210,temp:-5.0},{ka:190,co2:225,temp:-3.5},{ka:200,co2:240,temp:-2.5},{ka:210,co2:280,temp:0.5},{ka:220,co2:270,temp:-0.5},{ka:235,co2:230,temp:-3.0},{ka:250,co2:200,temp:-6.0},{ka:260,co2:195,temp:-7.5},{ka:275,co2:210,temp:-5.0},{ka:290,co2:240,temp:-2.5},{ka:300,co2:275,temp:0.0},{ka:310,co2:260,temp:-1.0},{ka:325,co2:220,temp:-4.0},{ka:340,co2:200,temp:-6.5},{ka:350,co2:250,temp:-2.0},{ka:365,co2:215,temp:-4.5},{ka:380,co2:200,temp:-6.0},{ka:400,co2:280,temp:0.5},{ka:410,co2:260,temp:-1.0},{ka:425,co2:230,temp:-3.5},{ka:440,co2:205,temp:-6.0},{ka:460,co2:210,temp:-5.5},{ka:480,co2:250,temp:-2.0},{ka:500,co2:265,temp:-1.0},{ka:520,co2:240,temp:-2.5},{ka:540,co2:215,temp:-4.5},{ka:560,co2:200,temp:-6.5},{ka:580,co2:230,temp:-3.5},{ka:600,co2:270,temp:-0.5},{ka:620,co2:250,temp:-2.0},{ka:640,co2:220,temp:-4.0},{ka:660,co2:200,temp:-6.5},{ka:680,co2:210,temp:-5.5},{ka:700,co2:250,temp:-2.5},{ka:720,co2:260,temp:-1.5},{ka:740,co2:235,temp:-3.0},{ka:760,co2:215,temp:-5.0},{ka:780,co2:245,temp:-2.0},{ka:800,co2:230,temp:-3.5}];
+const MAUNA_LOA=[{year:1959,co2:316},{year:1965,co2:320},{year:1970,co2:326},{year:1975,co2:331},{year:1980,co2:339},{year:1985,co2:346},{year:1990,co2:354},{year:1995,co2:361},{year:2000,co2:369},{year:2005,co2:380},{year:2010,co2:390},{year:2015,co2:401},{year:2020,co2:414},{year:2023,co2:421},{year:2024,co2:424},{year:2025,co2:427}];
+
+/* ---------- helpers ---------- */
+function lerp(data,xKey,yKey,x){
+  if(x<=data[0][xKey]) return data[0][yKey];
+  if(x>=data[data.length-1][xKey]) return data[data.length-1][yKey];
+  for(let i=1;i<data.length;i++){
+    if(x<=data[i][xKey]){
+      const a=data[i-1],b=data[i];
+      const t=(x-a[xKey])/(b[xKey]-a[xKey]);
+      return a[yKey]+t*(b[yKey]-a[yKey]);
+    }
+  }
+  return data[data.length-1][yKey];
+}
+function dpr(){return window.devicePixelRatio||1;}
+
+/* ---------- STATION 1: ice core dual-axis plot ---------- */
+const iceCanvas=document.getElementById('iceCanvas');
+const ictx=iceCanvas.getContext('2d');
+const M={l:46,r:52,t:18,b:38};
+const CO2MIN=170,CO2MAX=300, TMIN=-11,TMAX=3;
+let iceAge=18;
+
+function setupCanvas(c){
+  const ratio=dpr(); const w=c.clientWidth||820; const h=c.height;
+  c.width=w*ratio; c.style.height=h+'px'; c.getContext('2d').scale(ratio,ratio);
+  c._w=w; c._h=h;
+}
+function drawIce(){
+  const w=iceCanvas._w,h=iceCanvas._h;
+  ictx.clearRect(0,0,w,h);
+  const pw=w-M.l-M.r, ph=h-M.t-M.b;
+  // x: 800 (left) -> 0 (right) so "now" is on the right
+  const xOf=ka=>M.l+(800-ka)/800*pw;
+  const yCO2=v=>M.t+(CO2MAX-v)/(CO2MAX-CO2MIN)*ph;
+  const yT=v=>M.t+(TMAX-v)/(TMAX-TMIN)*ph;
+  // grid
+  ictx.strokeStyle='#e7e1d4'; ictx.lineWidth=1; ictx.font='11px Helvetica,Arial';
+  for(let v=180;v<=300;v+=40){ const y=yCO2(v); ictx.beginPath();ictx.moveTo(M.l,y);ictx.lineTo(w-M.r,y);ictx.stroke();
+    ictx.fillStyle='#c0492b'; ictx.textAlign='right'; ictx.fillText(v,M.l-6,y+3); }
+  // temp axis labels (right)
+  ictx.fillStyle='#2f6f8f'; ictx.textAlign='left';
+  [-8,-4,0].forEach(v=>{ictx.fillText(v+'°',w-M.r+6,yT(v)+3);});
+  // x labels
+  ictx.fillStyle='#777'; ictx.textAlign='center';
+  [0,200,400,600,800].forEach(k=>{ictx.fillText(k===0?'now':k+'ka',xOf(k),h-12);});
+  // temperature line
+  ictx.strokeStyle='#2f6f8f'; ictx.lineWidth=1.6; ictx.beginPath();
+  ICE_CORE.forEach((d,i)=>{const x=xOf(d.ka),y=yT(d.temp); i?ictx.lineTo(x,y):ictx.moveTo(x,y);}); ictx.stroke();
+  // co2 line
+  ictx.strokeStyle='#c0492b'; ictx.lineWidth=1.8; ictx.beginPath();
+  ICE_CORE.forEach((d,i)=>{const x=xOf(d.ka),y=yCO2(d.co2); i?ictx.lineTo(x,y):ictx.moveTo(x,y);}); ictx.stroke();
+  // reading line
+  const rx=xOf(iceAge);
+  ictx.strokeStyle='#1c2b2d'; ictx.lineWidth=1.4; ictx.setLineDash([4,4]);
+  ictx.beginPath();ictx.moveTo(rx,M.t);ictx.lineTo(rx,h-M.b);ictx.stroke(); ictx.setLineDash([]);
+  const cv=lerp(ICE_CORE,'ka','co2',iceAge), tv=lerp(ICE_CORE,'ka','temp',iceAge);
+  ictx.fillStyle='#c0492b'; ictx.beginPath();ictx.arc(rx,yCO2(cv),4,0,7);ictx.fill();
+  ictx.fillStyle='#2f6f8f'; ictx.beginPath();ictx.arc(rx,yT(tv),4,0,7);ictx.fill();
+}
+function updateIce(){
+  const cv=lerp(ICE_CORE,'ka','co2',iceAge), tv=lerp(ICE_CORE,'ka','temp',iceAge);
+  document.getElementById('iceAge').textContent=Math.round(iceAge)+' ka';
+  document.getElementById('iceCO2').textContent=Math.round(cv)+' ppm';
+  document.getElementById('iceTemp').textContent=(tv>=0?'+':'')+tv.toFixed(1)+' °C';
+  drawIce();
+}
+const iceSlider=document.getElementById('iceSlider');
+iceSlider.addEventListener('input',e=>{iceAge=+e.target.value; updateIce();});
+function iceClick(e){
+  const r=iceCanvas.getBoundingClientRect();
+  const px=(e.touches?e.touches[0].clientX:e.clientX)-r.left;
+  const w=iceCanvas._w, pw=w-M.l-M.r;
+  let frac=(px-M.l)/pw; frac=Math.min(Math.max(frac,0),1);
+  iceAge=Math.round(800-frac*800); iceSlider.value=iceAge; updateIce();
+}
+iceCanvas.addEventListener('mousedown',iceClick);
+iceCanvas.addEventListener('touchstart',e=>{iceClick(e);},{passive:true});
+
+/* ---------- STATION 2: Mauna Loa plot ---------- */
+const mlCanvas=document.getElementById('mlCanvas');
+const mctx=mlCanvas.getContext('2d');
+const M2={l:46,r:20,t:18,b:34};
+const ML_MIN=290, ML_MAX=440;
+let mlYear=1959;
+function drawML(){
+  const w=mlCanvas._w,h=mlCanvas._h;
+  mctx.clearRect(0,0,w,h);
+  const pw=w-M2.l-M2.r, ph=h-M2.t-M2.b;
+  const xOf=y=>M2.l+(y-1959)/(2025-1959)*pw;
+  const yOf=v=>M2.t+(ML_MAX-v)/(ML_MAX-ML_MIN)*ph;
+  mctx.strokeStyle='#e7e1d4'; mctx.lineWidth=1; mctx.font='11px Helvetica,Arial';
+  for(let v=300;v<=440;v+=40){const y=yOf(v);mctx.beginPath();mctx.moveTo(M2.l,y);mctx.lineTo(w-M2.r,y);mctx.stroke();
+    mctx.fillStyle='#c0492b';mctx.textAlign='right';mctx.fillText(v,M2.l-6,y+3);}
+  mctx.fillStyle='#777'; mctx.textAlign='center';
+  [1960,1980,2000,2020].forEach(yr=>{mctx.fillText(yr,xOf(yr),h-12);});
+  // natural ceiling
+  mctx.strokeStyle='#caa64a'; mctx.lineWidth=1.5; mctx.setLineDash([5,4]);
+  mctx.beginPath();mctx.moveTo(M2.l,yOf(300));mctx.lineTo(w-M2.r,yOf(300));mctx.stroke();mctx.setLineDash([]);
+  // co2 line
+  mctx.strokeStyle='#c0492b'; mctx.lineWidth=2.2; mctx.beginPath();
+  MAUNA_LOA.forEach((d,i)=>{const x=xOf(d.year),y=yOf(d.co2);i?mctx.lineTo(x,y):mctx.moveTo(x,y);});mctx.stroke();
+  MAUNA_LOA.forEach(d=>{mctx.fillStyle='#c0492b';mctx.beginPath();mctx.arc(xOf(d.year),yOf(d.co2),2.5,0,7);mctx.fill();});
+  // reading
+  const rx=xOf(mlYear), cv=lerp(MAUNA_LOA,'year','co2',mlYear);
+  mctx.strokeStyle='#1c2b2d';mctx.lineWidth=1.4;mctx.setLineDash([4,4]);
+  mctx.beginPath();mctx.moveTo(rx,M2.t);mctx.lineTo(rx,h-M2.b);mctx.stroke();mctx.setLineDash([]);
+  mctx.fillStyle='#11272b';mctx.beginPath();mctx.arc(rx,yOf(cv),4.5,0,7);mctx.fill();
+}
+function updateML(){
+  const cv=lerp(MAUNA_LOA,'year','co2',mlYear);
+  document.getElementById('mlYear').textContent=Math.round(mlYear);
+  document.getElementById('mlCO2').textContent=Math.round(cv)+' ppm';
+  drawML();
+}
+const mlSlider=document.getElementById('mlSlider');
+mlSlider.addEventListener('input',e=>{mlYear=+e.target.value;updateML();});
+function mlClick(e){
+  const r=mlCanvas.getBoundingClientRect();
+  const px=(e.touches?e.touches[0].clientX:e.clientX)-r.left;
+  const w=mlCanvas._w,pw=w-M2.l-M2.r;
+  let frac=(px-M2.l)/pw;frac=Math.min(Math.max(frac,0),1);
+  mlYear=Math.round(1959+frac*(2025-1959));mlSlider.value=mlYear;updateML();
+}
+mlCanvas.addEventListener('mousedown',mlClick);
+mlCanvas.addEventListener('touchstart',e=>{mlClick(e);},{passive:true});
+
+/* ---------- progress chips ---------- */
+function refreshProgress(){
+  const stations={s1:['s1_glacial_co2','s1_inter_co2','s1_max_co2','s1_relationship'],
+    s2:['s2_1959','s2_2025','s2_increase','s2_compare','s2_rate'],
+    s3:['s3_ice','s3_tree','s3_ocean','s3_cave','s3_why'],
+    s4:['s4_argument','s4_link','s4_reflect']};
+  const chips=document.querySelectorAll('.pchip');
+  Object.keys(stations).forEach((sid,idx)=>{
+    const done=stations[sid].every(q=>{const el=document.querySelector('[data-q="'+q+'"]');return el&&el.value.trim()!=='';});
+    if(done) chips[idx].classList.add('done'); else chips[idx].classList.remove('done');
+  });
+}
+document.querySelectorAll('.q').forEach(el=>el.addEventListener('input',refreshProgress));
+
+/* ---------- submission compiler ---------- */
+const LABELS={
+  s1_glacial_co2:'CO2 at glacial low', s1_inter_co2:'CO2 at interglacial high',
+  s1_max_co2:'Highest CO2 in 800,000-yr record', s1_relationship:'CO2–temperature relationship',
+  s2_1959:'CO2 in 1959', s2_2025:'CO2 in 2025', s2_increase:'Increase 1959→2025',
+  s2_compare:'Modern vs. natural range', s2_rate:'What the rate reveals',
+  s3_ice:'Ice cores record', s3_tree:'Tree rings record', s3_ocean:'Ocean sediment records',
+  s3_cave:'Speleothems record', s3_why:'Why ice cores are valuable for CO2',
+  s4_argument:'Attribution argument', s4_link:'CO2–temperature implication', s4_reflect:'Reflection'
+};
+const ORDER=Object.keys(LABELS);
+function buildSubmission(){
+  const name=document.getElementById('studentName').value.trim();
+  const missing=[];
+  if(!name) missing.push('your name');
+  ORDER.forEach(q=>{const el=document.querySelector('[data-q="'+q+'"]'); if(!el||el.value.trim()==='') missing.push(LABELS[q]);});
+  const warn=document.getElementById('warnMiss');
+  let out='LAB 9: CLIMATE CHANGE — ACTIVITY SUBMISSION\n';
+  out+='EES 2001 Physical Geology\n';
+  out+='Name: '+(name||'[NAME MISSING]')+'\n';
+  out+='Date: '+new Date().toLocaleDateString()+'\n';
+  out+='='.repeat(52)+'\n\n';
+  const groups=[['STATION 1 — ICE-CORE RECORD',['s1_glacial_co2','s1_inter_co2','s1_max_co2','s1_relationship']],
+    ['STATION 2 — MODERN RECORD (KEELING CURVE)',['s2_1959','s2_2025','s2_increase','s2_compare','s2_rate']],
+    ['STATION 3 — PROXY MATCHING',['s3_ice','s3_tree','s3_ocean','s3_cave','s3_why']],
+    ['STATION 4 — ANALYSIS & REFLECTION',['s4_argument','s4_link','s4_reflect']]];
+  groups.forEach(([title,qs])=>{
+    out+=title+'\n'+'-'.repeat(title.length)+'\n';
+    qs.forEach(q=>{const el=document.querySelector('[data-q="'+q+'"]');const v=el?el.value.trim():'';
+      out+=LABELS[q]+':\n'+(v||'[blank]')+'\n\n';});
+    out+='\n';
+  });
+  const ta=document.getElementById('subOut'); ta.value=out; ta.style.display='block';
+  if(missing.length){
+    warn.textContent='⚠ Still blank: '+missing.slice(0,6).join(', ')+(missing.length>6?', …':'')+'. You can still copy, but completeness affects your grade.';
+    warn.style.display='block';
+  } else { warn.style.display='none'; }
+  return out;
+}
+document.getElementById('buildBtn').addEventListener('click',buildSubmission);
+document.getElementById('copyBtn').addEventListener('click',()=>{
+  const ta=document.getElementById('subOut');
+  if(!ta.value) buildSubmission();
+  ta.style.display='block'; ta.select();
+  navigator.clipboard.writeText(ta.value).then(()=>{
+    const m=document.getElementById('copiedMsg'); m.style.display='block';
+    setTimeout(()=>m.style.display='none',4000);
+  }).catch(()=>{document.execCommand('copy');
+    const m=document.getElementById('copiedMsg'); m.style.display='block';
+    setTimeout(()=>m.style.display='none',4000);});
+});
+
+/* ---------- init + resize ---------- */
+function initAll(){
+  setupCanvas(iceCanvas); setupCanvas(mlCanvas);
+  updateIce(); updateML();
+}
+window.addEventListener('resize',()=>{ setTimeout(initAll,80); });
+initAll();
+</script>
+</body>
+</html>
