@@ -73,7 +73,7 @@
   .btn-primary:hover{background:#d8b65c;}
   .btn-ghost{background:rgba(255,255,255,.14); color:#fff; border:1.5px solid rgba(255,255,255,.5);}
   .btn-ghost:hover{background:rgba(255,255,255,.22);}
-  #subOut{width:100%; min-height:200px; margin-top:14px; font-family:"SF Mono",Menlo,Consolas,monospace; font-size:13px; background:#11272b; color:#d7e2e4; border:1px solid #3a5b60; border-radius:10px; padding:14px; display:none;}
+  #subOut{display:none;}
   .copied{font-family:"Helvetica Neue",Arial,sans-serif; font-size:14px; color:#d7e9d7; margin-top:8px; display:none;}
   .warnmiss{font-family:"Helvetica Neue",Arial,sans-serif; font-size:14px; color:#ffd9cf; margin-top:8px; display:none;}
   footer{border-top:1px solid var(--line); padding:22px 0; text-align:center; font-family:"Helvetica Neue",Arial,sans-serif; font-size:13px; color:var(--muted);}
@@ -86,7 +86,7 @@
   <div class="wrap">
     <div class="eyebrow">EES 2001 · Lab 9 · Graded Activity</div>
     <h1>Climate Change: Reading the Evidence</h1>
-    <p>Work through four stations using real climate data. Your answers fill in as you go — at the end, build your submission and paste it into Canvas. <a class="back" href="lab-guide.html">← Back to Lab Guide</a></p>
+    <p>Work through four stations using real climate data. Your answers fill in as you go — at the end, download a PDF and upload it to Canvas. <a class="back" href="lab-guide.html">← Back to Lab Guide</a></p>
   </div>
 </header>
 
@@ -103,7 +103,7 @@
 <main class="wrap">
 
   <div class="intro-note" style="margin-top:18px;">
-    <strong>How this works:</strong> Each station has an interactive data tool and a few questions. Type directly into the boxes — nothing is saved to a server, so don't refresh until you've built and copied your submission at the bottom. Put your name in the first box.
+    <strong>How this works:</strong> Each station has an interactive data tool and a few questions. Type directly into the boxes — nothing is saved to a server, so don't refresh until you've downloaded your PDF at the bottom. Put your name in the first box.
   </div>
 
   <label class="field" for="studentName">Your name <span class="hint">(required for submission)</span></label>
@@ -282,15 +282,13 @@
   <!-- ===================== SUBMIT ===================== -->
   <section class="station submit-station" id="submit">
     <div class="stnum" style="color:#f0d68a;">Final Step</div>
-    <h2>Build Your Submission</h2>
-    <p>Click below to compile all your answers into plain text. Copy it, then paste it into the Lab 9 assignment box in Canvas. Make sure your name is filled in at the top of the page.</p>
+    <h2>Download Your Submission</h2>
+    <p>Click below to generate a PDF of all your answers. It will download to your device — then upload that PDF file to the Lab 9 assignment in Canvas. Make sure your name is filled in at the top of the page first.</p>
     <div class="btnrow">
-      <button class="btn btn-primary" id="buildBtn">Build my submission</button>
-      <button class="btn btn-ghost" id="copyBtn">Copy to clipboard</button>
+      <button class="btn btn-primary" id="pdfBtn">Download my PDF</button>
     </div>
     <div class="warnmiss" id="warnMiss"></div>
-    <div class="copied" id="copiedMsg">✓ Copied. Paste it into the Canvas assignment box.</div>
-    <textarea id="subOut" readonly></textarea>
+    <div class="copied" id="copiedMsg">✓ PDF downloaded. Upload it to the Lab 9 assignment in Canvas.</div>
   </section>
 
 </main>
@@ -300,6 +298,7 @@
   Data: NOAA GML &amp; EPICA/Vostok ice cores (public domain)
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 /* ---------- DATA (bundled) ---------- */
 const ICE_CORE=[{ka:0,co2:280,temp:0.0},{ka:10,co2:265,temp:-0.5},{ka:18,co2:190,temp:-8.0},{ka:25,co2:195,temp:-7.5},{ka:35,co2:200,temp:-6.0},{ka:50,co2:200,temp:-6.5},{ka:65,co2:205,temp:-5.5},{ka:80,co2:225,temp:-4.0},{ka:95,co2:235,temp:-3.0},{ka:105,co2:245,temp:-2.0},{ka:120,co2:280,temp:1.0},{ka:130,co2:270,temp:0.5},{ka:140,co2:190,temp:-8.5},{ka:150,co2:195,temp:-8.0},{ka:160,co2:200,temp:-7.0},{ka:175,co2:210,temp:-5.0},{ka:190,co2:225,temp:-3.5},{ka:200,co2:240,temp:-2.5},{ka:210,co2:280,temp:0.5},{ka:220,co2:270,temp:-0.5},{ka:235,co2:230,temp:-3.0},{ka:250,co2:200,temp:-6.0},{ka:260,co2:195,temp:-7.5},{ka:275,co2:210,temp:-5.0},{ka:290,co2:240,temp:-2.5},{ka:300,co2:275,temp:0.0},{ka:310,co2:260,temp:-1.0},{ka:325,co2:220,temp:-4.0},{ka:340,co2:200,temp:-6.5},{ka:350,co2:250,temp:-2.0},{ka:365,co2:215,temp:-4.5},{ka:380,co2:200,temp:-6.0},{ka:400,co2:280,temp:0.5},{ka:410,co2:260,temp:-1.0},{ka:425,co2:230,temp:-3.5},{ka:440,co2:205,temp:-6.0},{ka:460,co2:210,temp:-5.5},{ka:480,co2:250,temp:-2.0},{ka:500,co2:265,temp:-1.0},{ka:520,co2:240,temp:-2.5},{ka:540,co2:215,temp:-4.5},{ka:560,co2:200,temp:-6.5},{ka:580,co2:230,temp:-3.5},{ka:600,co2:270,temp:-0.5},{ka:620,co2:250,temp:-2.0},{ka:640,co2:220,temp:-4.0},{ka:660,co2:200,temp:-6.5},{ka:680,co2:210,temp:-5.5},{ka:700,co2:250,temp:-2.5},{ka:720,co2:260,temp:-1.5},{ka:740,co2:235,temp:-3.0},{ka:760,co2:215,temp:-5.0},{ka:780,co2:245,temp:-2.0},{ka:800,co2:230,temp:-3.5}];
@@ -448,54 +447,117 @@ document.querySelectorAll('.q').forEach(el=>el.addEventListener('input',refreshP
 /* ---------- submission compiler ---------- */
 const LABELS={
   s1_glacial_co2:'CO2 at glacial low', s1_inter_co2:'CO2 at interglacial high',
-  s1_max_co2:'Highest CO2 in 800,000-yr record', s1_relationship:'CO2–temperature relationship',
-  s2_1959:'CO2 in 1959', s2_2025:'CO2 in 2025', s2_increase:'Increase 1959→2025',
+  s1_max_co2:'Highest CO2 in 800,000-yr record', s1_relationship:'CO2-temperature relationship',
+  s2_1959:'CO2 in 1959', s2_2025:'CO2 in 2025', s2_increase:'Increase 1959 to 2025',
   s2_compare:'Modern vs. natural range', s2_rate:'What the rate reveals',
   s3_ice:'Ice cores record', s3_tree:'Tree rings record', s3_ocean:'Ocean sediment records',
   s3_cave:'Speleothems record', s3_why:'Why ice cores are valuable for CO2',
-  s4_argument:'Attribution argument', s4_link:'CO2–temperature implication', s4_reflect:'Reflection'
+  s4_argument:'Attribution argument', s4_link:'CO2-temperature implication', s4_reflect:'Reflection'
 };
 const ORDER=Object.keys(LABELS);
-function buildSubmission(){
+
+function collect(){
   const name=document.getElementById('studentName').value.trim();
   const missing=[];
   if(!name) missing.push('your name');
   ORDER.forEach(q=>{const el=document.querySelector('[data-q="'+q+'"]'); if(!el||el.value.trim()==='') missing.push(LABELS[q]);});
+  return {name,missing};
+}
+
+function downloadPDF(){
+  const {name,missing}=collect();
   const warn=document.getElementById('warnMiss');
-  let out='LAB 9: CLIMATE CHANGE — ACTIVITY SUBMISSION\n';
-  out+='EES 2001 Physical Geology\n';
-  out+='Name: '+(name||'[NAME MISSING]')+'\n';
-  out+='Date: '+new Date().toLocaleDateString()+'\n';
-  out+='='.repeat(52)+'\n\n';
-  const groups=[['STATION 1 — ICE-CORE RECORD',['s1_glacial_co2','s1_inter_co2','s1_max_co2','s1_relationship']],
-    ['STATION 2 — MODERN RECORD (KEELING CURVE)',['s2_1959','s2_2025','s2_increase','s2_compare','s2_rate']],
-    ['STATION 3 — PROXY MATCHING',['s3_ice','s3_tree','s3_ocean','s3_cave','s3_why']],
-    ['STATION 4 — ANALYSIS & REFLECTION',['s4_argument','s4_link','s4_reflect']]];
-  groups.forEach(([title,qs])=>{
-    out+=title+'\n'+'-'.repeat(title.length)+'\n';
-    qs.forEach(q=>{const el=document.querySelector('[data-q="'+q+'"]');const v=el?el.value.trim():'';
-      out+=LABELS[q]+':\n'+(v||'[blank]')+'\n\n';});
-    out+='\n';
-  });
-  const ta=document.getElementById('subOut'); ta.value=out; ta.style.display='block';
   if(missing.length){
-    warn.textContent='⚠ Still blank: '+missing.slice(0,6).join(', ')+(missing.length>6?', …':'')+'. You can still copy, but completeness affects your grade.';
+    warn.textContent='⚠ Still blank: '+missing.slice(0,6).join(', ')+(missing.length>6?', …':'')+'. You can still download, but completeness affects your grade.';
     warn.style.display='block';
   } else { warn.style.display='none'; }
-  return out;
+
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'pt',format:'letter'});
+  const PW=doc.internal.pageSize.getWidth();
+  const PH=doc.internal.pageSize.getHeight();
+  const ML=56, MR=56, MT=56, MB=56;
+  const CW=PW-ML-MR;
+  let y=MT;
+
+  function ensure(space){ if(y+space>PH-MB){ doc.addPage(); y=MT; } }
+  function gap(h){ y+=h; }
+
+  // Header band
+  doc.setFillColor(28,72,76); // #1c484c-ish
+  doc.rect(0,0,PW,86,'F');
+  doc.setTextColor(255,255,255);
+  doc.setFont('helvetica','bold'); doc.setFontSize(9);
+  doc.text('EES 2001 · PHYSICAL GEOLOGY · LAB 9',ML,34);
+  doc.setFontSize(18);
+  doc.text('Climate Change: Reading the Evidence',ML,58);
+  doc.setFont('helvetica','normal'); doc.setFontSize(10);
+  doc.text('Activity Submission',ML,74);
+  y=110;
+
+  // Student meta
+  doc.setTextColor(30,40,45);
+  doc.setFont('helvetica','bold'); doc.setFontSize(12);
+  doc.text('Name: ',ML,y);
+  const nameW=doc.getTextWidth('Name: ');
+  doc.setFont('helvetica','normal');
+  doc.text(name||'[NAME MISSING]',ML+nameW,y);
+  doc.setFontSize(10); doc.setTextColor(110,120,120);
+  doc.text('Submitted: '+new Date().toLocaleDateString(),PW-MR,y,{align:'right'});
+  y+=12;
+  doc.setDrawColor(202,166,74); doc.setLineWidth(1.5);
+  doc.line(ML,y,PW-MR,y);
+  y+=22;
+
+  const groups=[
+    ['Station 1 — Ice-Core Record',['s1_glacial_co2','s1_inter_co2','s1_max_co2','s1_relationship']],
+    ['Station 2 — Modern Record (Keeling Curve)',['s2_1959','s2_2025','s2_increase','s2_compare','s2_rate']],
+    ['Station 3 — Proxy Matching',['s3_ice','s3_tree','s3_ocean','s3_cave','s3_why']],
+    ['Station 4 — Analysis & Reflection',['s4_argument','s4_link','s4_reflect']]
+  ];
+
+  groups.forEach(([title,qs])=>{
+    ensure(40);
+    // station heading
+    doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(192,73,43);
+    doc.text(title,ML,y); y+=6;
+    doc.setDrawColor(217,211,198); doc.setLineWidth(0.8);
+    doc.line(ML,y,PW-MR,y); y+=16;
+
+    qs.forEach(q=>{
+      const el=document.querySelector('[data-q="'+q+'"]');
+      const val=el?el.value.trim():'';
+      // label
+      doc.setFont('helvetica','bold'); doc.setFontSize(10.5); doc.setTextColor(47,111,143);
+      const labelLines=doc.splitTextToSize(LABELS[q],CW);
+      ensure(labelLines.length*13+8);
+      doc.text(labelLines,ML,y); y+=labelLines.length*13+2;
+      // answer
+      doc.setFont('helvetica','normal'); doc.setFontSize(11); doc.setTextColor(30,40,45);
+      const ans=val||'[left blank]';
+      const ansLines=doc.splitTextToSize(ans,CW);
+      ansLines.forEach(line=>{ ensure(15); doc.text(line,ML,y); y+=14; });
+      y+=10;
+    });
+    y+=8;
+  });
+
+  // footer page numbers
+  const pages=doc.internal.getNumberOfPages();
+  for(let i=1;i<=pages;i++){
+    doc.setPage(i);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(140,148,148);
+    doc.text('EES 2001 · Lab 9 Climate Change',ML,PH-28);
+    doc.text('Page '+i+' of '+pages,PW-MR,PH-28,{align:'right'});
+  }
+
+  const safe=(name||'student').replace(/[^a-z0-9]+/gi,'_').replace(/^_+|_+$/g,'');
+  doc.save('Lab9_Climate_Change_'+(safe||'submission')+'.pdf');
+
+  const m=document.getElementById('copiedMsg'); m.style.display='block';
+  setTimeout(()=>m.style.display='none',5000);
 }
-document.getElementById('buildBtn').addEventListener('click',buildSubmission);
-document.getElementById('copyBtn').addEventListener('click',()=>{
-  const ta=document.getElementById('subOut');
-  if(!ta.value) buildSubmission();
-  ta.style.display='block'; ta.select();
-  navigator.clipboard.writeText(ta.value).then(()=>{
-    const m=document.getElementById('copiedMsg'); m.style.display='block';
-    setTimeout(()=>m.style.display='none',4000);
-  }).catch(()=>{document.execCommand('copy');
-    const m=document.getElementById('copiedMsg'); m.style.display='block';
-    setTimeout(()=>m.style.display='none',4000);});
-});
+document.getElementById('pdfBtn').addEventListener('click',downloadPDF);
 
 /* ---------- init + resize ---------- */
 function initAll(){
