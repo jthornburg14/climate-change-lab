@@ -387,9 +387,9 @@
 <script>
 // ---------- Greenhouse interactive ----------
 const gases = [
-  {id:'co2',  label:'CO₂',          warm:14, desc:'Carbon dioxide — the main human-driven greenhouse gas.'},
+  {id:'co2',  label:'CO₂',          warm:14, desc:'Carbon dioxide - the main human-driven greenhouse gas.'},
   {id:'h2o',  label:'Water vapor',  warm:12, desc:'The most abundant greenhouse gas; its amount depends on temperature.'},
-  {id:'ch4',  label:'Methane',      warm:5,  desc:'Methane — less abundant than CO₂ but far stronger per molecule.'},
+  {id:'ch4',  label:'Methane',      warm:5,  desc:'Methane - less abundant than CO₂ but far stronger per molecule.'},
   {id:'n2',   label:'Nitrogen (N₂)',warm:0,  desc:'Nitrogen makes up 78% of air but absorbs almost no infrared.'}
 ];
 const state = {co2:false, h2o:false, ch4:false, n2:false};
@@ -426,10 +426,10 @@ function update(){
   irOut.setAttribute('opacity', (1-Math.min(warm/40,0.7)).toFixed(2));
   if(warm===0){
     descEl.textContent = anyActiveSelected() ?
-      'Nitrogen is selected, but it barely absorbs heat — temperature is unchanged.' :
+      'Nitrogen is selected, but it barely absorbs heat - temperature is unchanged.' :
       'A bare rock with no atmosphere to trap heat.';
   } else if(temp>=14 && temp<=16){
-    descEl.textContent='Close to the real Earth (~+15 °C) — a comfortable balance.';
+    descEl.textContent='Close to the real Earth (~+15 °C) - a comfortable balance.';
   } else if(temp>16){
     descEl.textContent='Stronger greenhouse effect → a warmer planet.';
   } else {
@@ -454,7 +454,7 @@ document.querySelectorAll('.quiz').forEach(q=>{
       } else {
         btn.classList.add('wrong');
         q.querySelector('.opt[data-opt="'+answer+'"]').classList.add('correct');
-        fb.textContent='Not quite — the highlighted option is correct.';
+        fb.textContent='Not quite, the highlighted option is correct.';
         fb.className='qfeedback show bad';
       }
     });
