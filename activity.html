@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lab 9: Climate Change — Activity | EES 2001</title>
+<title>Lab 9: Climate Change Lab Activity | EES 2001</title>
 <style>
   :root{
     --ink:#1c2b2d; --paper:#f6f4ee; --panel:#ffffff;
@@ -84,9 +84,9 @@
 
 <header class="hero">
   <div class="wrap">
-    <div class="eyebrow">EES 2001 · Lab 9 · Graded Activity</div>
+    <div class="eyebrow">EES 2001 · Lab 9 · Lab Activity</div>
     <h1>Climate Change: Reading the Evidence</h1>
-    <p>Work through four stations using real climate data. Your answers fill in as you go — at the end, download a PDF and upload it to Canvas. <a class="back" href="lab-guide.html">← Back to Lab Guide</a></p>
+    <p>Work through four stations using real climate data. Your answers fill in as you go, at the end, download a PDF and upload it to Canvas. <a class="back" href="lab-guide.html">← Back to Lab Guide</a></p>
   </div>
 </header>
 
@@ -103,7 +103,7 @@
 <main class="wrap">
 
   <div class="intro-note" style="margin-top:18px;">
-    <strong>How this works:</strong> Each station has an interactive data tool and a few questions. Type directly into the boxes — nothing is saved to a server, so don't refresh until you've downloaded your PDF at the bottom. Put your name in the first box.
+    <strong>How this works:</strong> Each station has an interactive data tool and a few questions. Type directly into the boxes, nothing is saved to a server, so don't refresh until you've downloaded your PDF at the bottom. Put your name in the first box.
   </div>
 
   <label class="field" for="studentName">Your name <span class="hint">(required for submission)</span></label>
@@ -113,7 +113,7 @@
   <section class="station" id="s1">
     <div class="stnum">Station 1 · <span class="pts">15 points</span></div>
     <h2>The 800,000-Year Ice-Core Record</h2>
-    <p>Below is the Antarctic ice-core record: atmospheric CO₂ (red) and temperature anomaly (blue) reaching back 800,000 years. Drag the slider — or click anywhere on the plot — to move the reading line and inspect any point in time.</p>
+    <p>Below is the Antarctic ice-core record: atmospheric CO₂ (red) and temperature anomaly (blue) reaching back 800,000 years. Drag the slider (or click anywhere on the plot) to move the reading line and inspect any point in time.</p>
 
     <div class="plotwrap">
       <canvas id="iceCanvas" width="820" height="320" aria-label="Ice core CO2 and temperature over 800,000 years"></canvas>
@@ -143,11 +143,11 @@
     <div class="inline-fields">
       <div>
         <label class="field">CO₂ at a glacial low <span class="hint">(coldest periods)</span></label>
-        <input class="txt q" data-q="s1_glacial_co2" type="text" placeholder="e.g. ~190 ppm">
+        <input class="txt q" data-q="s1_glacial_co2" type="text" placeholder="e.g. 200 ppm">
       </div>
       <div>
         <label class="field">CO₂ at an interglacial high <span class="hint">(warmest periods)</span></label>
-        <input class="txt q" data-q="s1_inter_co2" type="text" placeholder="e.g. ~280 ppm">
+        <input class="txt q" data-q="s1_inter_co2" type="text" placeholder="e.g. 400 ppm">
       </div>
     </div>
 
@@ -161,8 +161,8 @@
   <!-- ===================== STATION 2 ===================== -->
   <section class="station" id="s2">
     <div class="stnum">Station 2 · <span class="pts">20 points</span></div>
-    <h2>The Modern Spike — the Keeling Curve</h2>
-    <p>Since 1958, instruments at Mauna Loa, Hawaii have measured atmospheric CO₂ directly. This is the <em>same quantity</em> you just read from ancient ice — now measured in real time. The dashed gold line marks the 300 ppm natural ceiling you found in the ice-core record. Move the slider to read any year.</p>
+    <h2>The Modern Spike - the Keeling Curve</h2>
+    <p>Since 1958, instruments at Mauna Loa, Hawaii have measured atmospheric CO₂ directly. This is the <em>same quantity</em> you just read from ancient ice, now measured in real time. The dashed gold line marks the 300 ppm natural ceiling you found in the ice-core record. Move the slider to read any year.</p>
 
     <div class="plotwrap">
       <canvas id="mlCanvas" width="820" height="300" aria-label="Mauna Loa CO2 since 1958"></canvas>
@@ -264,18 +264,18 @@
   <section class="station" id="s4">
     <div class="stnum">Station 4 · <span class="pts">25 points</span></div>
     <h2>Build the Argument</h2>
-    <p>You've now read two real datasets. This station asks you to put them together into a short, evidence-based explanation — the kind of reasoning a scientist uses to attribute the modern change to human activity. Use specific numbers from the stations above.</p>
+    <p>You've now read two real datasets. This station asks you to put them together into a short, evidence-based explanation, the kind of reasoning a scientist uses to attribute the modern change to human activity. Use specific numbers from the stations above.</p>
 
-    <label class="field">1. Attribution argument <span class="hint">(4–6 sentences)</span></label>
-    <p class="helper">Using evidence from <em>both</em> the ice-core record and the modern record, explain why scientists conclude that the current CO₂ rise is driven by human activity rather than the natural glacial–interglacial cycle. Cite at least two specific numbers you recorded above.</p>
+    <label class="field">1. Attribution argument <span class="hint">(4-6 sentences)</span></label>
+    <p class="helper">Using evidence from <em>both</em> the ice-core record and the modern record, explain why scientists conclude that the current CO₂ rise is driven by human activity rather than the natural glacial-interglacial cycle. Cite at least two specific numbers you recorded above.</p>
     <textarea class="q" data-q="s4_argument" style="min-height:140px;" placeholder="Reference the natural range, the modern level, and the rate of change…"></textarea>
 
-    <label class="field">2. The CO₂–temperature link</label>
+    <label class="field">2. The CO₂-temperature link</label>
     <p class="helper">Based on the lockstep relationship you saw in Station 1, what does the ice-core record suggest about what happens to global temperature as CO₂ continues to rise above the natural ceiling?</p>
     <textarea class="q" data-q="s4_link" placeholder="If past CO₂ and temperature moved together, what does that imply going forward?"></textarea>
 
     <label class="field">3. Reflection</label>
-    <p class="helper">What is one thing from this lab that changed, sharpened, or surprised your understanding of climate change? There's no wrong answer here — this is graded on genuine engagement.</p>
+    <p class="helper">What is one thing from this lab that changed, sharpened, or surprised your understanding of climate change? There's no wrong answer here, this is graded on genuine engagement.</p>
     <textarea class="q" data-q="s4_reflect" placeholder="A sentence or two on what stuck with you."></textarea>
   </section>
 
@@ -283,7 +283,7 @@
   <section class="station submit-station" id="submit">
     <div class="stnum" style="color:#f0d68a;">Final Step</div>
     <h2>Download Your Submission</h2>
-    <p>Click below to generate a PDF of all your answers. It will download to your device — then upload that PDF file to the Lab 9 assignment in Canvas. Make sure your name is filled in at the top of the page first.</p>
+    <p>Click below to generate a PDF of all your answers. It will download to your device, then upload that PDF file to the Lab 9 assignment in Canvas. Make sure your name is filled in at the top of the page first.</p>
     <div class="btnrow">
       <button class="btn btn-primary" id="pdfBtn">Download my PDF</button>
     </div>
@@ -294,7 +294,7 @@
 </main>
 
 <footer>
-  EES 2001 · Physical Geology · Lab 9 Climate Change — Activity ·
+  EES 2001 · Physical Geology · Lab 9 Climate Change Lab Activity ·
   Data: NOAA GML &amp; EPICA/Vostok ice cores (public domain)
 </footer>
 
